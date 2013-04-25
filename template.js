@@ -33,11 +33,14 @@ var Template = (function() {
         }
       }
     }
-    if (0 === htmlTemplate.length && errors.length === 0) { errors.push(errorMessage(id)); }
+    if (0 === htmlTemplate.length && 0 === errors.length) { errors.push(errorMessage(id)); }
     if (errors.length > 0) { htmlTemplate = errors.join('<br/>'); }
     return {
       renderWith: function(view, partials) {
         return Mustache.render(htmlTemplate, view, partials);
+      },
+      compile: function() {
+        return Mustache.compile(htmlTemplate);
       }
     };
   };
