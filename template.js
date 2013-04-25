@@ -1,16 +1,23 @@
 var Template = function(id) {
   var htmlTemplate = 'An error occured, template "' + id + '" does not exist';
   if (typeof id === 'undefined') {
-    var asTemplate = $('template:first, script[type="text/html-template"]:first, [data-type=template]:first');
+    var asTemplate = [];
+    try {
+      asTemplate = $('template:first, script[type="text/html-template"]:first, [data-type=template]:first');
+    } catch(e) { console.error(e); }
     if (asTemplate.length > 0) {
       htmlTemplate = asTemplate.first().html();
     } 
   } else {
-    var jquerySelector = $(id);
+    var jquerySelector = [];
+    try { jquerySelector = $(id); } catch(e) { console.error(e); }
     if (jquerySelector.length > 0) {
       htmlTemplate = jquerySelector.html();
     } else {
-      var asTemplate = $('template#' + id + ', script[type="text/html-template"]#' + id + ', [data-type=template]#' + id);
+      var asTemplate = [];
+      try {
+        asTemplate = $('template#' + id + ', script[type="text/html-template"]#' + id + ', [data-type=template]#' + id);
+      } catch(e) { console.error(e); }
       if (asTemplate.length > 0) {
         htmlTemplate = asTemplate.first().html();
       }
