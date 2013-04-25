@@ -1,31 +1,19 @@
 var Template = function(id) {
   var htmlTemplate = 'An error occured, template "' + id + '" does not exist';
   if (typeof id === 'undefined') {
-    var asTemplate = $('template:first');
-    var asScript = $('script[type="text/html-template"]:first');
-    var asTemplateType = $('[data-type=template]:first');
+    var asTemplate = $('template:first, script[type="text/html-template"]:first, [data-type=template]:first');
     if (asTemplate.length > 0) {
-      htmlTemplate = asTemplate.html();
-    } else if (asScript.length > 0) {
-      htmlTemplate = asScript.html();
-    } else if (asTemplateType.length > 0) {
-      htmlTemplate = asTemplateType.html();
-    }
+      htmlTemplate = asTemplate.first().html();
+    } 
   } else {
     var jquerySelector = $(id);
     if (jquerySelector.length > 0) {
       htmlTemplate = jquerySelector.html();
     } else {
-      var asTemplate = $('template#' + id);
-      var asScript = $('script[type="text/html-template"]#' + id);
-      var asTemplateType = $('[data-type=template]#' + id);
+      var asTemplate = $('template#' + id + ', script[type="text/html-template"]#' + id + ', [data-type=template]#' + id);
       if (asTemplate.length > 0) {
-        htmlTemplate = asTemplate.html();
-      } else if (asScript.length > 0) {
-        htmlTemplate = asScript.html();
-      } else if (asTemplateType.length > 0) {
-        htmlTemplate = asTemplateType.html();
-      } 
+        htmlTemplate = asTemplate.first().html();
+      }
     }
   }
   return {
