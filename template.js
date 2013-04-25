@@ -1,6 +1,6 @@
 var Template = (function() {
   var errorMessage = function(id) {
-    return 'An error occured, template "' + id + '" does not exist';;
+    return 'An error occured, template "' + id + '" does not exist';
   };
   var Template = function(id) {
     var htmlTemplate = errorMessage(id);
