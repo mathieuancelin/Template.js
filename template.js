@@ -1,24 +1,25 @@
 var Template = (function() {
   var firstSelector = 'template:first, script[type="text/html-template"]:first, [data-type=template]:first';
   var errorMessage = function(id) {
-    return '[template.js] An error occured, template "' + id + '" does not exist<br/>';
+    return '[template.js] An error occured, template with id: "' + id + '" does not exist';
   };
-  var errorJquery = function(selector) {
-    return '[template.js] An error occured, possible wrong jQuery selector ( ' + selector + ' )<br/>';
+  var errorJquery = function(selector, id) {
+    return '[template.js] An error occured while creating template: new Template("' + id + '"), possible wrong jQuery selector ( ' + selector + ' )';
   };
   var Template = function(id) {
-    var htmlTemplate = errorMessage(id);
+    var errors = [];
+    var htmlTemplate = '';
     if (typeof id === 'undefined') {
       var asTemplate = [];
       try {
         asTemplate = $(firstSelector);
-      } catch(e) { htmlTemplate += errorJquery(firstSelector); console.error(e); }
+      } catch(e) { errors.push(errorJquery(firstSelector, id)); console.error(e); }
       if (asTemplate.length > 0) {
         htmlTemplate = asTemplate.first().html();
       } 
     } else {
       var jquerySelector = [];
-      try { jquerySelector = $(id); } catch(e) { htmlTemplate += errorJquery(id); console.error(e); }
+      try { jquerySelector = $(id); } catch(e) { errors.push(errorJquery(id, id)); console.error(e); }
       if (jquerySelector.length > 0) {
         htmlTemplate = jquerySelector.first().html();
       } else {
@@ -26,12 +27,14 @@ var Template = (function() {
         var selector = Mustache.render('template#{{id}}, script[type="text/html-template"]#{{id}}, [data-type=template]#{{id}}', {id: id});
         try {
           asTemplate = $(selector);
-        } catch(e) { htmlTemplate += errorJquery(selector); console.error(e); }
+        } catch(e) { errors.push(errorJquery(selector, id)); console.error(e); }
         if (asTemplate.length > 0) {
           htmlTemplate = asTemplate.first().html();
         }
       }
     }
+    if (0 === htmlTemplate.length && errors.length === 0) { errors.push(errorMessage(id)); }
+    if (errors.length > 0) { htmlTemplate = errors.join('<br/>'); }
     return {
       renderWith: function(view, partials) {
         return Mustache.render(htmlTemplate, view, partials);
