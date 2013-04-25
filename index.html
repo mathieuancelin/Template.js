@@ -1,0 +1,64 @@
+<html>
+	<head>
+		<title>Templates tests</title>
+		<script src="jquery-1.9.0.min.js"></script>
+		<script src="mustache.js"></script>
+		<script src="templates.js"></script>
+	</head>
+	<body>
+
+		<div id="hidden1" data-type="template" style="display: none;">
+			<h3>{{message}}</h3>
+		</div>
+
+		<template id="firstone" data-type="template">
+			<h5>{{message}}</h5>
+		</template>
+
+
+		<template id="myTemplate">
+			<h1>{{message}}</h1>
+		</template>
+
+		<script type="text/html-template" id="myTemplate2">
+			<h2>{{message}}</h2>
+		</script>
+
+		<template id="zeeeee">
+			<h1>{{message}}</h1>
+		</template>
+
+		<div id="content1"></div>
+		<div id="content2"></div>
+		<div id="content3"></div>
+		<div id="content4"></div>
+		<div id="content5"></div>
+		<div id="content6"></div>
+
+		<script type="text/javascript">
+			$(document).ready(function() {
+
+				console.log(new Template('myTemplate').renderWith({message: 'Hello World!'}));
+
+				console.log(new Template('template#zeeeee').renderWith({message: 'Hello World!'}));
+
+				console.log(Template('myTemplate').renderWith({message: 'Hello World2!'}));
+
+				console.log(Template().renderWith({message: 'Hello World3!'}));
+
+				$('#content1').template('myTemplate').renderWith({message: 'Hello World1!'});
+
+
+				$('#content2').template('myTemplate2').renderWith({message: 'Hello World2!'});
+				$('#content3').template(Template('myTemplate')).renderWith({message: 'Hello World3!'});
+				$('#content4').template(Template('myTemplate2')).renderWith({message: 'Hello World4!'});
+
+
+
+				$('#content5').template('hidden1', {message: 'Hello World5!'});
+
+				$('#content6').template().renderWith({message: 'Hello World6!'});
+			});
+		</script>
+	</body>
+</html>
