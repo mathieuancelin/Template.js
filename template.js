@@ -1,6 +1,9 @@
 var Template = (function() {
   var errorMessage = function(id) {
-    return 'An error occured, template "' + id + '" does not exist';
+    return '[template.js] An error occured, template "' + id + '" does not exist';
+  };
+  var errorJquery = function() {
+    return '[template.js] An error occured, possible wrong jQuery selector.';
   };
   var Template = function(id) {
     var htmlTemplate = errorMessage(id);
@@ -8,20 +11,20 @@ var Template = (function() {
       var asTemplate = [];
       try {
         asTemplate = $('template:first, script[type="text/html-template"]:first, [data-type=template]:first');
-      } catch(e) { console.error(e); }
+      } catch(e) { htmlTemplate = errorJquery(); console.error(e); }
       if (asTemplate.length > 0) {
         htmlTemplate = asTemplate.first().html();
       } 
     } else {
       var jquerySelector = [];
-      try { jquerySelector = $(id); } catch(e) { console.error(e); }
+      try { jquerySelector = $(id); } catch(e) { htmlTemplate = errorJquery(); console.error(e); }
       if (jquerySelector.length > 0) {
         htmlTemplate = jquerySelector.first().html();
       } else {
         var asTemplate = [];
         try {
           asTemplate = $('template#' + id + ', script[type="text/html-template"]#' + id + ', [data-type=template]#' + id);
-        } catch(e) { console.error(e); }
+        } catch(e) { htmlTemplate = errorJquery(); console.error(e); }
         if (asTemplate.length > 0) {
           htmlTemplate = asTemplate.first().html();
         }
