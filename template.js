@@ -12,7 +12,7 @@ var Template = function(id) {
     var jquerySelector = [];
     try { jquerySelector = $(id); } catch(e) { console.error(e); }
     if (jquerySelector.length > 0) {
-      htmlTemplate = jquerySelector.html();
+      htmlTemplate = jquerySelector.first().html();
     } else {
       var asTemplate = [];
       try {
