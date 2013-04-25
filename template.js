@@ -6,6 +6,9 @@ var Template = (function() {
   var errorJquery = function(selector, id) {
     return '[template.js] An error occured while creating template: new Template("' + id + '"), possible wrong jQuery selector ( ' + selector + ' )';
   };
+  var idSelector = function(id) {
+    return Mustache.render('template#{{id}}, script[type="text/html-template"]#{{id}}, [data-type=template]#{{id}}', {id: id});
+  };
   var Template = function(id) {
     var errors = [];
     var htmlTemplate = '';
@@ -24,7 +27,7 @@ var Template = (function() {
         htmlTemplate = jquerySelector.first().html();
       } else {
         var asTemplate = [];
-        var selector = Mustache.render('template#{{id}}, script[type="text/html-template"]#{{id}}, [data-type=template]#{{id}}', {id: id});
+        var selector = idSelector(id);
         try {
           asTemplate = $(selector);
         } catch(e) { errors.push(errorJquery(selector, id)); console.error(e); }
