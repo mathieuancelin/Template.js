@@ -1,3 +1,6 @@
+if (typeof Mustache === 'undefined') {
+  throw '[template.js] Mustache is needed to use template.js. Please import it';
+}
 var Template = (function() {
   var firstSelector = 'template:first, script[type="text/html-template"]:first, [data-type=template]:first';
   var errorMessage = function(id) {
@@ -20,6 +23,8 @@ var Template = (function() {
       if (asTemplate.length > 0) {
         htmlTemplate = asTemplate.first().html();
       } 
+    } else if (typeof id === 'object') {
+      htmlTemplate = id.templateContent;
     } else {
       var jquerySelector = [];
       try { jquerySelector = $(id); } catch(e) { errors.push(errorJquery(id, id)); console.error(e); }
@@ -50,6 +55,28 @@ var Template = (function() {
 
   if (typeof jQuery !== 'undefined') {
     (function($) {
+      $.fn.templateFrom = function(url) {
+        var current = $(this);
+        if (typeof url === 'undefined') {
+          theTemplate = Template();
+          return {
+            renderWith: function(view1, partials1) {
+              return current.html(theTemplate.renderWith(view1, partials1));
+            }
+          };
+        } else {
+          var theTemplateContent = '';
+          $.ajax({ type: "GET", url: url, async: false, success: function(data) { theTemplateContent = data; } });
+          var theTemplate = Template({templateContent: theTemplateContent});
+          //var promise = $.get(url);
+          return {
+            renderWith: function(view1, partials1) {
+              //promise.then(function(data) { current.html(Mustache.render(data, view1, partials1)); });
+              return current.html(theTemplate.renderWith(view1, partials1));
+            }
+          };
+        } 
+      };
       $.fn.template = function(template, view, partials) {
         var current = $(this);
         var theTemplate = {

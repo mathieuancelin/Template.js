@@ -1,9 +1,9 @@
 <html>
 	<head>
 		<title>Templates tests</title>
-		<script src="jquery-1.9.0.min.js"></script>
-		<script src="mustache.js"></script>
-		<script src="template.js"></script>
+		<script src="./jquery-1.9.0.min.js"></script>
+		<script src="./mustache.js"></script>
+		<script src="./template.js"></script>
 	</head>
 	<body>
 
@@ -24,6 +24,7 @@
 		<div id="content5"></div>
 		<div id="content6"></div>
 		<div id="content7"></div>
+		<div id="content8"></div>
 		<script type="text/javascript">
 			$(document).ready(function() {
 
@@ -48,6 +49,8 @@
 				$('#content7').template('lkjhlkjhkljh', {message: 'Hello World7!'});
 
 				$('#content6').template().renderWith({message: 'Hello World6!'});
+
+				$('#content8').templateFrom('./template.html').renderWith({message: 'Hello World!'});
 
 			});
 		</script>
