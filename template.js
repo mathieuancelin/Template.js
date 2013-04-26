@@ -25,8 +25,6 @@ var Template = (function() {
       } 
     } else if (typeof id === 'object') {
       if (typeof id.url !== 'undefined') {
-        //var promise = $.get(url);
-        //promise.then(function(data) { current.html(Mustache.render(data, view1, partials1)); });
         $.ajax({ type: "GET", url: id.url, async: false, success: function(data) { htmlTemplate = data; } });
       } else if (typeof id.templateContent !== 'undefined') {
         htmlTemplate = id.templateContent;
@@ -61,13 +59,16 @@ var Template = (function() {
 
   if (typeof jQuery !== 'undefined') {
     (function($) {
-      $.fn.templateFrom = function(url) {
-        var current = $(this);
-        var theTemplate = {
+      function errorTemplate(id) {
+        return {
           renderWith: function() {
             return errorMessage(url);
           }
         };
+      }
+      $.fn.templateFrom = function(url) {
+        var current = $(this);
+        var theTemplate = errorTemplate(url);
         if (typeof url === 'undefined') {
           theTemplate = Template();
         } else {
@@ -81,11 +82,7 @@ var Template = (function() {
       };
       $.fn.templateOf = function(template) {
         var current = $(this);
-        var theTemplate = {
-          renderWith: function() {
-            return errorMessage(template);
-          }
-        };
+        var theTemplate = errorTemplate(template);
         if (typeof template === 'undefined') {
           theTemplate = Template();
         } else {
@@ -99,11 +96,7 @@ var Template = (function() {
       };
       $.fn.template = function(template, view, partials) {
         var current = $(this);
-        var theTemplate = {
-          renderWith: function() {
-            return errorMessage(template);
-          }
-        };
+        var theTemplate = errorTemplate(template);
         if (typeof template === 'undefined') {
           theTemplate = Template();
         } else if(typeof template === 'string') {

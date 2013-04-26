@@ -25,6 +25,7 @@
 		<div id="content6"></div>
 		<div id="content7"></div>
 		<div id="content8"></div>
+		<div id="content9"></div>
 		<script type="text/javascript">
 			$(document).ready(function() {
 
@@ -50,8 +51,10 @@
 
 				$('#content6').template().renderWith({message: 'Hello World6!'});
 
-				$('#content8').templateFrom('./template.html').renderWith({message: 'Hello lmkjlkjlkj!'});
+				$('#content8').templateFrom('./template.html').renderWith({message: 'Hello template!'});
 
+				$('#content9').templateOf('Pouet : {{message}}').renderWith({message: 'Hello!'});
+				
 			});
 		</script>
 	</body>
