@@ -27,7 +27,7 @@ var Template = (function() {
       if (typeof id.url !== 'undefined') {
         //var promise = $.get(url);
         //promise.then(function(data) { current.html(Mustache.render(data, view1, partials1)); });
-        $.ajax({ type: "GET", url: url, async: false, success: function(data) { htmlTemplate = data; } });
+        $.ajax({ type: "GET", url: id.url, async: false, success: function(data) { htmlTemplate = data; } });
       } else if (typeof id.templateContent !== 'undefined') {
         htmlTemplate = id.templateContent;
       }
@@ -65,10 +65,10 @@ var Template = (function() {
         var current = $(this);
         var theTemplate = {
           renderWith: function() {
-            return errorMessage(template);
+            return errorMessage(url);
           }
         };
-        if (typeof template === 'undefined') {
+        if (typeof url === 'undefined') {
           theTemplate = Template();
         } else {
           theTemplate = Template({url: url});
