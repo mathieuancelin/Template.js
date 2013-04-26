@@ -2,12 +2,15 @@ if (typeof Mustache === 'undefined') {
   throw '[template.js] Mustache is needed to use template.js. Please import it';
 }
 var Template = (function() {
+  var UNDEFINED = 'undefined';
+  var STRING = 'string';
+  var OBJECT = 'object';
   var firstSelector = 'template:first, script[type="text/html-template"]:first, [data-type=template]:first';
   var errorMessage = function(id) {
-    return '[template.js] An error occured, template with id: "' + id + '" does not exist';
+    return Mustache.render('[template.js] An error occured, template with id: "{{id}}" does not exist', {id:id});
   };
   var errorJquery = function(selector, id) {
-    return '[template.js] An error occured while creating template: new Template("' + id + '"), possible wrong jQuery selector ( ' + selector + ' )';
+    return Mustache.render('[template.js] An error occured while creating template: new Template("{{id}}"), possible wrong jQuery selector ( {{selector}} )', {id:id, selector:selector});
   };
   var idSelector = function(id) {
     return Mustache.render('template#{{id}}, script[type="text/html-template"]#{{id}}, [data-type=template]#{{id}}', {id: id});
@@ -15,7 +18,7 @@ var Template = (function() {
   var Template = function(id) {
     var errors = [];
     var htmlTemplate = '';
-    if (typeof id === 'undefined') {
+    if (typeof id === UNDEFINED) {
       var asTemplate = [];
       try {
         asTemplate = $(firstSelector);
@@ -23,10 +26,10 @@ var Template = (function() {
       if (asTemplate.length > 0) {
         htmlTemplate = asTemplate.first().html();
       } 
-    } else if (typeof id === 'object') {
-      if (typeof id.url !== 'undefined') {
+    } else if (typeof id === OBJECT) {
+      if (typeof id.url !== UNDEFINED) {
         $.ajax({ type: "GET", url: id.url, async: false, success: function(data) { htmlTemplate = data; } });
-      } else if (typeof id.templateContent !== 'undefined') {
+      } else if (typeof id.templateContent !== UNDEFINED) {
         htmlTemplate = id.templateContent;
       }
     } else {
@@ -57,7 +60,7 @@ var Template = (function() {
     };
   };
 
-  if (typeof jQuery !== 'undefined') {
+  if (typeof jQuery !== UNDEFINED) {
     (function($) {
       function errorTemplate(id) {
         return {
@@ -69,7 +72,7 @@ var Template = (function() {
       $.fn.templateFrom = function(url) {
         var current = $(this);
         var theTemplate = errorTemplate(url);
-        if (typeof url === 'undefined') {
+        if (typeof url === UNDEFINED) {
           theTemplate = Template();
         } else {
           theTemplate = Template({url: url});
@@ -83,7 +86,7 @@ var Template = (function() {
       $.fn.templateOf = function(template) {
         var current = $(this);
         var theTemplate = errorTemplate(template);
-        if (typeof template === 'undefined') {
+        if (typeof template === UNDEFINED) {
           theTemplate = Template();
         } else {
           theTemplate = Template({templateContent: template});
@@ -97,14 +100,14 @@ var Template = (function() {
       $.fn.template = function(template, view, partials) {
         var current = $(this);
         var theTemplate = errorTemplate(template);
-        if (typeof template === 'undefined') {
+        if (typeof template === UNDEFINED) {
           theTemplate = Template();
-        } else if(typeof template === 'string') {
+        } else if(typeof template === STRING) {
           theTemplate = Template(template);
         } else {
           theTemplate = template;
         }
-        if (typeof view === 'undefined') {
+        if (typeof view === UNDEFINED) {
           return {
             renderWith: function(view1, partials1) {
               return current.html(theTemplate.renderWith(view1, partials1));
