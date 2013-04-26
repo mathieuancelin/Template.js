@@ -24,7 +24,13 @@ var Template = (function() {
         htmlTemplate = asTemplate.first().html();
       } 
     } else if (typeof id === 'object') {
-      htmlTemplate = id.templateContent;
+      if (typeof id.url !== 'undefined') {
+        //var promise = $.get(url);
+        //promise.then(function(data) { current.html(Mustache.render(data, view1, partials1)); });
+        $.ajax({ type: "GET", url: url, async: false, success: function(data) { htmlTemplate = data; } });
+      } else if (typeof id.templateContent !== 'undefined') {
+        htmlTemplate = id.templateContent;
+      }
     } else {
       var jquerySelector = [];
       try { jquerySelector = $(id); } catch(e) { errors.push(errorJquery(id, id)); console.error(e); }
@@ -57,25 +63,39 @@ var Template = (function() {
     (function($) {
       $.fn.templateFrom = function(url) {
         var current = $(this);
-        if (typeof url === 'undefined') {
+        var theTemplate = {
+          renderWith: function() {
+            return errorMessage(template);
+          }
+        };
+        if (typeof template === 'undefined') {
           theTemplate = Template();
-          return {
-            renderWith: function(view1, partials1) {
-              return current.html(theTemplate.renderWith(view1, partials1));
-            }
-          };
         } else {
-          var theTemplateContent = '';
-          $.ajax({ type: "GET", url: url, async: false, success: function(data) { theTemplateContent = data; } });
-          var theTemplate = Template({templateContent: theTemplateContent});
-          //var promise = $.get(url);
-          return {
-            renderWith: function(view1, partials1) {
-              //promise.then(function(data) { current.html(Mustache.render(data, view1, partials1)); });
-              return current.html(theTemplate.renderWith(view1, partials1));
-            }
-          };
+          theTemplate = Template({url: url});
         } 
+        return {
+          renderWith: function(view1, partials1) {
+            return current.html(theTemplate.renderWith(view1, partials1));
+          }
+        };
+      };
+      $.fn.templateOf = function(template) {
+        var current = $(this);
+        var theTemplate = {
+          renderWith: function() {
+            return errorMessage(template);
+          }
+        };
+        if (typeof template === 'undefined') {
+          theTemplate = Template();
+        } else {
+          theTemplate = Template({templateContent: template});
+        } 
+        return {
+          renderWith: function(view1, partials1) {
+            return current.html(theTemplate.renderWith(view1, partials1));
+          }
+        };
       };
       $.fn.template = function(template, view, partials) {
         var current = $(this);
