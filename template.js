@@ -5,6 +5,12 @@ var Template = (function() {
   var UNDEFINED = 'undefined';
   var STRING = 'string';
   var OBJECT = 'object';
+  var isString    = function(obj) { return (typeof obj === STRING); };
+  var isObject    = function(obj) { return (typeof obj === OBJECT); };
+  var isUndefined = function(obj) { return (typeof obj === UNDEFINED); };
+  var isNotString    = function(obj) { return !(typeof obj === STRING); };
+  var isNotObject    = function(obj) { return !(typeof obj === OBJECT); };
+  var isNotUndefined = function(obj) { return !(typeof obj === UNDEFINED); };
   var firstSelector = 'template:first, script[type="text/html-template"]:first, [data-type=template]:first';
   var errorMessage = function(id) {
     return Mustache.render('[template.js] An error occured, template with id: "{{id}}" does not exist', {id:id});
@@ -18,7 +24,7 @@ var Template = (function() {
   var Template = function(id) {
     var errors = [];
     var htmlTemplate = '';
-    if (typeof id === UNDEFINED) {
+    if (isUndefined(id)) { 
       var asTemplate = [];
       try {
         asTemplate = $(firstSelector);
@@ -26,10 +32,10 @@ var Template = (function() {
       if (asTemplate.length > 0) {
         htmlTemplate = asTemplate.first().html();
       } 
-    } else if (typeof id === OBJECT) {
-      if (typeof id.url !== UNDEFINED) {
+    } else if (isObject(id)) { 
+      if (isNotUndefined(id.url)) { 
         $.ajax({ type: "GET", url: id.url, async: false, success: function(data) { htmlTemplate = data; } });
-      } else if (typeof id.templateContent !== UNDEFINED) {
+      } else if(isNotUndefined(id.templateContent)) { 
         htmlTemplate = id.templateContent;
       }
     } else {
@@ -60,7 +66,7 @@ var Template = (function() {
     };
   };
 
-  if (typeof jQuery !== UNDEFINED) {
+  if (isNotUndefined(jQuery)) { 
     (function($) {
       function errorTemplate(id) {
         return {
@@ -72,7 +78,7 @@ var Template = (function() {
       $.fn.templateFrom = function(url) {
         var current = $(this);
         var theTemplate = errorTemplate(url);
-        if (typeof url === UNDEFINED) {
+        if (isUndefined(url)) { 
           theTemplate = Template();
         } else {
           theTemplate = Template({url: url});
@@ -86,7 +92,7 @@ var Template = (function() {
       $.fn.templateOf = function(template) {
         var current = $(this);
         var theTemplate = errorTemplate(template);
-        if (typeof template === UNDEFINED) {
+        if (isUndefined(template)) { 
           theTemplate = Template();
         } else {
           theTemplate = Template({templateContent: template});
@@ -100,14 +106,14 @@ var Template = (function() {
       $.fn.template = function(template, view, partials) {
         var current = $(this);
         var theTemplate = errorTemplate(template);
-        if (typeof template === UNDEFINED) {
+        if (isUndefined(template)) { 
           theTemplate = Template();
-        } else if(typeof template === STRING) {
+        } else if (isString(template)) {
           theTemplate = Template(template);
         } else {
           theTemplate = template;
         }
-        if (typeof view === UNDEFINED) {
+        if (isUndefined(view)) { 
           return {
             renderWith: function(view1, partials1) {
               return current.html(theTemplate.renderWith(view1, partials1));
