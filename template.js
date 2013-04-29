@@ -8,9 +8,9 @@ var Template = (function() {
   var isString    = function(obj) { return (typeof obj === STRING); };
   var isObject    = function(obj) { return (typeof obj === OBJECT); };
   var isUndefined = function(obj) { return (typeof obj === UNDEFINED); };
-  var isNotString    = function(obj) { return !(typeof obj === STRING); };
-  var isNotObject    = function(obj) { return !(typeof obj === OBJECT); };
-  var isNotUndefined = function(obj) { return !(typeof obj === UNDEFINED); };
+  var isNotString    = function(obj) { return !isString(obj); };
+  var isNotObject    = function(obj) { return !isObject(obj); };
+  var isNotUndefined = function(obj) { return !isUndefined(obj); };
   var firstSelector = 'template:first, script[type="text/html-template"]:first, [data-type=template]:first';
   var errorMessage = function(id) {
     return Mustache.render('[template.js] An error occured, template with id: "{{id}}" does not exist', {id:id});
@@ -68,9 +68,15 @@ var Template = (function() {
 
   if (isNotUndefined(jQuery)) { 
     (function($) {
-      function errorTemplate(id) {
+      var errorTemplate = function(id) {
         return {
           renderWith: function() {
+            return errorMessage(url);
+          },
+          appendWith: function() {
+            return errorMessage(url);
+          },
+          prependWith: function() {
             return errorMessage(url);
           }
         };
@@ -86,6 +92,12 @@ var Template = (function() {
         return {
           renderWith: function(view1, partials1) {
             return current.html(theTemplate.renderWith(view1, partials1));
+          },
+          appendWith: function(view1, partials1) {
+            return current.append(theTemplate.renderWith(view1, partials1));
+          },
+          prependWith: function(view1, partials1) {
+            return current.prepend(theTemplate.renderWith(view1, partials1));
           }
         };
       };
@@ -100,6 +112,12 @@ var Template = (function() {
         return {
           renderWith: function(view1, partials1) {
             return current.html(theTemplate.renderWith(view1, partials1));
+          },
+          appendWith: function(view1, partials1) {
+            return current.append(theTemplate.renderWith(view1, partials1));
+          },
+          prependWith: function(view1, partials1) {
+            return current.prepend(theTemplate.renderWith(view1, partials1));
           }
         };
       };
@@ -117,6 +135,12 @@ var Template = (function() {
           return {
             renderWith: function(view1, partials1) {
               return current.html(theTemplate.renderWith(view1, partials1));
+            },
+            appendWith: function(view1, partials1) {
+              return current.append(theTemplate.renderWith(view1, partials1));
+            },
+            prependWith: function(view1, partials1) {
+              return current.prepend(theTemplate.renderWith(view1, partials1));
             }
           };
         } else {
