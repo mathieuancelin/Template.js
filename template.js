@@ -2,21 +2,28 @@ if (typeof Mustache === 'undefined') {
   console.error('[template.js] Mustache might be needed to use template.js.');
 }
 if (typeof _ === 'undefined') {
-  throw '[template.js] Lodash might be needed to use template.js.';
+  console.error('[template.js] Lodash might be needed to use template.js.');
 }
 if ((typeof _ === 'undefined') && (typeof Mustache === 'undefined')) {
   throw '[template.js] Lodash and/or Mustache are needed to use template.js. Please import it';
 }
 var TemplateSettings = (function() {
-  var mustache = true;
+  var mustache = (typeof Mustache !== 'undefined');
   var useMustache = function(value) {
     if(typeof value !== 'undefined') {
       mustache = value;
     }
     return mustache;
   };
+  var useLodash = function(value) {
+    if(typeof value !== 'undefined') {
+      mustache = !value;
+    }
+    return !mustache;
+  };
   return {
-    useMustache: useMustache
+    useMustache: useMustache,
+    useLodash: useLodash
   };
 })();
 var Template = (function() {
@@ -98,7 +105,7 @@ var Template = (function() {
     };
   };
 
-  if (isNotUndefined(jQuery)) { 
+  if (isNotUndefined(jQuery)) {
     (function($) {
       var errorTemplate = function(id) {
         return {
